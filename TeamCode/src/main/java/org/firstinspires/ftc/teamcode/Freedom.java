@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Freedom")
 public class Freedom extends LinearOpMode {
@@ -12,6 +13,7 @@ public class Freedom extends LinearOpMode {
     private DcMotor rechtsvoor;
     private DcMotor rechtsachter;
     private DcMotor arm;
+    private Servo elleboog;
 
     /**
      * This function is executed when this OpMode is selected from the Driver Station.
@@ -23,6 +25,7 @@ public class Freedom extends LinearOpMode {
         rechtsvoor = hardwareMap.get(DcMotor.class, "rechtsvoor");
         rechtsachter = hardwareMap.get(DcMotor.class, "rechtsachter");
         arm = hardwareMap.get(DcMotor.class, "arm");
+        elleboog = hardwareMap.get(Servo.class, "elleboog");
 
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -50,6 +53,12 @@ public class Freedom extends LinearOpMode {
 
             float armPower = Utils.closestToZero(new Float[]{-gamepad1.left_trigger, gamepad1.right_trigger});
             arm.setPower(armPower);
+
+            if (gamepad1.left_bumper) {
+                elleboog.setPosition(0.4f);
+            } else if (gamepad1.right_bumper) {
+                elleboog.setPosition(0.9f);
+            }
         }
     }
 }
