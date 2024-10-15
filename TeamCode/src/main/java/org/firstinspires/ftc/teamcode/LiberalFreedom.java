@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "LiberalFreedom")
 public class LiberalFreedom extends LinearOpMode {
@@ -31,9 +32,26 @@ public class LiberalFreedom extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+        ElapsedTime elapsed = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+
         Utils.PowerSupply powerSupply = new Utils.PowerSupply();
         while (opModeIsActive()) {
-            powerSupply.getPower(-1f,0f,0f);
+            double seconds = elapsed.time();
+
+            double iter = Math.floor(seconds * 2) % 4;
+            if (iter == 0) {
+                powerSupply.getPower(1f, 0f, 0f);
+            } else if (iter == 1) {
+                powerSupply.getPower(0f, 1f, 0f);
+            } else if (iter == 2) {
+                powerSupply.getPower(-1f, 0f, 0f);
+            } else if (iter == 3) {
+                powerSupply.getPower(0f, -1f, 0f);
+            }
+
+            if (seconds == 20) {
+                requestOpModeStop();
+            }
 
             linksvoor.setPower(powerSupply.frontLeftPower);
             linksachter.setPower(powerSupply.backLeftPower);
