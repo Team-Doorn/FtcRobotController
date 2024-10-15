@@ -14,6 +14,7 @@ public class Freedom extends LinearOpMode {
     private DcMotor rechtsachter;
     private DcMotor arm;
     private Servo elleboog;
+    private Servo grijper;
 
     /**
      * This function is executed when this OpMode is selected from the Driver Station.
@@ -26,9 +27,13 @@ public class Freedom extends LinearOpMode {
         rechtsachter = hardwareMap.get(DcMotor.class, "rechtsachter");
         arm = hardwareMap.get(DcMotor.class, "arm");
         elleboog = hardwareMap.get(Servo.class, "elleboog");
+        grijper = hardwareMap.get(Servo.class, "grijper");
 
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        elleboog.scaleRange(0.435, 0.735);
+        grijper.scaleRange(0.3, 0.55);
 
         // Put initialization blocks here.
         waitForStart();
@@ -37,20 +42,26 @@ public class Freedom extends LinearOpMode {
 
         Utils.PowerSupply powerSupply = new Utils.PowerSupply();
         while (opModeIsActive()) {
-            powerSupply.getPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_y);
+            powerSupply.getPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
             linksvoor.setPower(powerSupply.frontLeftPower);
             linksachter.setPower(powerSupply.backLeftPower);
             rechtsvoor.setPower(powerSupply.frontRightPower);
             rechtsachter.setPower(powerSupply.backRightPower);
 
-            float armPower = Utils.closestToZero(new Float[]{-gamepad1.left_trigger, gamepad1.right_trigger});
+            float armPower = Utils.closestToZero(new Float[]{-gamepad2.left_trigger, gamepad2.right_trigger});
             arm.setPower(armPower);
 
-            if (gamepad1.left_bumper) {
-                elleboog.setPosition(0.4f);
-            } else if (gamepad1.right_bumper) {
-                elleboog.setPosition(0.9f);
+            if (gamepad2.left_bumper) {
+                elleboog.setPosition(0);
+            } else if (gamepad2.right_bumper) {
+                elleboog.setPosition(1);
+            }
+
+            if (gamepad2.a) {
+                grijper.setPosition(0);
+            } else if (gamepad2.b) {
+                grijper.setPosition((1));
             }
         }
     }
