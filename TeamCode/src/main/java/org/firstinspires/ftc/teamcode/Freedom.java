@@ -35,21 +35,14 @@ public class Freedom extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+        Utils.PowerSupply powerSupply = new Utils.PowerSupply();
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * 1.1;
-            double rx = gamepad1.right_stick_x;
+            powerSupply.getPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_y);
 
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
-
-            linksvoor.setPower(frontLeftPower);
-            linksachter.setPower(backLeftPower);
-            rechtsvoor.setPower(frontRightPower);
-            rechtsachter.setPower(backRightPower);
+            linksvoor.setPower(powerSupply.frontLeftPower);
+            linksachter.setPower(powerSupply.backLeftPower);
+            rechtsvoor.setPower(powerSupply.frontRightPower);
+            rechtsachter.setPower(powerSupply.backRightPower);
 
             float armPower = Utils.closestToZero(new Float[]{-gamepad1.left_trigger, gamepad1.right_trigger});
             arm.setPower(armPower);
