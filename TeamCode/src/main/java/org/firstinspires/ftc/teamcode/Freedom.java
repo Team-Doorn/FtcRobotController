@@ -47,9 +47,10 @@ public class Freedom extends LinearOpMode {
 
         float elleboogPos = 1f;
         boolean dpadPressed = false;
+        boolean aPressed = false;
         while (opModeIsActive()) {
             mainPowerSupply.getPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-            secondaryPowerSupply.getPower(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.right_stick_x, 0.1f);
+            secondaryPowerSupply.getPower(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.right_stick_x, 0.2f);
 
             Utils.PowerSupply chosenPowerSupply = secondaryPowerSupply.isActive() ? secondaryPowerSupply : mainPowerSupply;
 
@@ -78,9 +79,12 @@ public class Freedom extends LinearOpMode {
             }
 
             if (gamepad2.a) {
-                grijper.setPosition(0);
-            } else if (gamepad2.b) {
-                grijper.setPosition(1);
+                if (!aPressed) {
+                    grijper.setPosition(grijper.getPosition() == 0 ? 1 : 0);
+                }
+                aPressed = true;
+            } else {
+                aPressed = false;
             }
 
         }
