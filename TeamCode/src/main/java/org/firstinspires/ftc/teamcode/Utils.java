@@ -33,5 +33,23 @@ public class Utils {
 
             return this;
         }
+
+
+        public PowerSupply getPower(Float x, Float y, Float rx, float power) {
+            y = -y;
+            x = x * 1.1f;
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            frontLeftPower = (y + x + rx) / denominator * power;
+            backLeftPower = (y - x + rx) / denominator * power;
+            frontRightPower = (y - x - rx) / denominator * power;
+            backRightPower = (y + x - rx) / denominator * power;
+
+            return this;
+        }
+
+        boolean isActive() {
+            return frontLeftPower != 0 && backLeftPower != 0 && frontRightPower != 0 && backRightPower != 0;
+        }
     }
 }

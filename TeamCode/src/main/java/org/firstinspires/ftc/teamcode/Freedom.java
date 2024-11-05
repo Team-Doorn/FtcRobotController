@@ -32,7 +32,8 @@ public class Freedom extends LinearOpMode {
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        elleboog.scaleRange(0.435, 0.735);
+        elleboog.scaleRange(0.42, 0.735);
+        elleboog.setPosition(1);
         grijper.scaleRange(0.3, 0.55);
 
         // Put initialization blocks here.
@@ -40,29 +41,48 @@ public class Freedom extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Utils.PowerSupply powerSupply = new Utils.PowerSupply();
-        while (opModeIsActive()) {
-            powerSupply.getPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        Utils.PowerSupply mainPowerSupply = new Utils.PowerSupply();
+        Utils.PowerSupply secondaryPowerSupply = new Utils.PowerSupply();
 
-            linksvoor.setPower(powerSupply.frontLeftPower);
-            linksachter.setPower(powerSupply.backLeftPower);
-            rechtsvoor.setPower(powerSupply.frontRightPower);
-            rechtsachter.setPower(powerSupply.backRightPower);
+
+        float elleboogPos = 1f;
+        boolean dpadPressed = false;
+        while (opModeIsActive()) {
+            mainPowerSupply.getPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            secondaryPowerSupply.getPower(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.right_stick_x, 0.1f);
+
+            Utils.PowerSupply chosenPowerSupply = secondaryPowerSupply.isActive() ? secondaryPowerSupply : mainPowerSupply;
+
+            linksvoor.setPower(chosenPowerSupply.frontLeftPower);
+            linksachter.setPower(chosenPowerSupply.backLeftPower);
+            rechtsvoor.setPower(chosenPowerSupply.frontRightPower);
+            rechtsachter.setPower(chosenPowerSupply.backRightPower);
 
             float armPower = Utils.closestToZero(new Float[]{-gamepad2.left_trigger, gamepad2.right_trigger});
             arm.setPower(armPower);
 
-            if (gamepad2.left_bumper) {
-                elleboog.setPosition(0);
-            } else if (gamepad2.right_bumper) {
-                elleboog.setPosition(1);
+            if (gamepad2.dpad_down) {
+                if (!dpadPressed) {
+                    dpadPressed = true;
+                    elleboogPos = Math.max(elleboogPos - 0.25f, 0);
+                    elleboog.setPosition(elleboogPos);
+                }
+            } else if (gamepad2.dpad_up) {
+                if (!dpadPressed) {
+                    dpadPressed = true;
+                    elleboogPos = Math.min(elleboogPos + 0.25f, 1);
+                    elleboog.setPosition(elleboogPos);
+                }
+            } else {
+                dpadPressed = false;
             }
 
             if (gamepad2.a) {
                 grijper.setPosition(0);
             } else if (gamepad2.b) {
-                grijper.setPosition((1));
+                grijper.setPosition(1);
             }
+
         }
     }
 }
