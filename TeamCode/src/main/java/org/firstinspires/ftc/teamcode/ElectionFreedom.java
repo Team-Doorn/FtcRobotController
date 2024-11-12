@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "LiberalFreedom")
-public class LiberalFreedom extends LinearOpMode {
+@Autonomous(name = "ElectionFreedom")
+public class ElectionFreedom extends LinearOpMode {
     private DcMotor linksachter;
     private DcMotor linksvoor;
     private DcMotor rechtsvoor;
@@ -42,22 +42,24 @@ public class LiberalFreedom extends LinearOpMode {
         ElapsedTime elapsed = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
 
         Utils.PowerSupply powerSupply = new Utils.PowerSupply();
-        boolean armOn = true;
+        boolean armOn = false;
         while (opModeIsActive()) {
             double seconds = elapsed.time();
-            if (seconds < 2.25) {
-                powerSupply.getPower(0f, -1f, 0f, .3f);
-            } else if (seconds < 2.5) {
+            if (seconds < .7) {
+                powerSupply.getPower(0f, 1f, 0f, .2f);
+            } else if (seconds < .95) {
                 powerSupply.getPower(0f, 0f, 0f, 0f);
-                armOn = false;
             } else if (seconds < 3.2) {
-                powerSupply.getPower(0f, -1f, 0f, .2f);
-            } else {
+                powerSupply.getPower(0f, 1f, 0f, .3f);
+            } else if (seconds < 4.75) {
                 powerSupply.getPower(0f, 0f, 0f, 0f);
+                armOn = true;
+            } else {
+                armOn = false;
             }
 
             if (!armOn) {
-                grijper.setPosition(0);
+                grijper.setPosition(1);
             }
 
             linksvoor.setPower(powerSupply.frontLeftPower);
@@ -65,7 +67,7 @@ public class LiberalFreedom extends LinearOpMode {
             rechtsvoor.setPower(powerSupply.frontRightPower);
             rechtsachter.setPower(powerSupply.backRightPower);
 
-            arm.setPower(armOn ? .8 : 0);
+            arm.setPower(armOn ? -.8 : 0);
         }
     }
 }
