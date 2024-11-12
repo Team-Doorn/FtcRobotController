@@ -44,13 +44,22 @@ public class Freedom extends LinearOpMode {
         Utils.PowerSupply mainPowerSupply = new Utils.PowerSupply();
         Utils.PowerSupply secondaryPowerSupply = new Utils.PowerSupply();
 
+        float power = .2f;
+
 
         float elleboogPos = 1f;
         boolean dpadPressed = false;
         boolean aPressed = false;
         while (opModeIsActive()) {
+            if (gamepad2.dpad_left) {
+                power = 0.2f;
+            }
+            if (gamepad2.dpad_right) {
+                power = 1f;
+            }
+
             mainPowerSupply.getPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-            secondaryPowerSupply.getPower(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.right_stick_x, 0.2f);
+            secondaryPowerSupply.getPower(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.right_stick_x, power);
 
             Utils.PowerSupply chosenPowerSupply = secondaryPowerSupply.isActive() ? secondaryPowerSupply : mainPowerSupply;
 

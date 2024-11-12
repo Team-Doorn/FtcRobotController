@@ -15,18 +15,25 @@ public class LiberalFreedom extends LinearOpMode {
     private DcMotor rechtsachter;
     private DcMotor arm;
     private Servo elleboog;
+    private Servo grijper;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linksachter = hardwareMap.get(DcMotor.class, "linksachter");
+         linksachter = hardwareMap.get(DcMotor.class, "linksachter");
         linksvoor = hardwareMap.get(DcMotor.class, "linksvoor");
         rechtsvoor = hardwareMap.get(DcMotor.class, "rechtsvoor");
         rechtsachter = hardwareMap.get(DcMotor.class, "rechtsachter");
         arm = hardwareMap.get(DcMotor.class, "arm");
         elleboog = hardwareMap.get(Servo.class, "elleboog");
+        grijper = hardwareMap.get(Servo.class, "grijper");
 
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        elleboog.scaleRange(0.42, 0.735);
+        elleboog.setPosition(1);
+        grijper.scaleRange(0.3, 0.55);
+        grijper.setPosition(1);
 
         waitForStart();
 
@@ -35,28 +42,26 @@ public class LiberalFreedom extends LinearOpMode {
         ElapsedTime elapsed = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
 
         Utils.PowerSupply powerSupply = new Utils.PowerSupply();
+        boolean armOn = true;
         while (opModeIsActive()) {
             double seconds = elapsed.time();
-
-            double iter = Math.floor(seconds * 2) % 4;
-            if (iter == 0) {
-                powerSupply.getPower(1f, 0f, 0f);
-            } else if (iter == 1) {
-                powerSupply.getPower(0f, 1f, 0f);
-            } else if (iter == 2) {
-                powerSupply.getPower(-1f, 0f, 0f);
-            } else if (iter == 3) {
-                powerSupply.getPower(0f, -1f, 0f);
+            if (seconds < 2.25) {
+                powerSupply.getPower(0f, -1f, 0f, .3f);
+            } else {
+                powerSupply.getPower(0f, 0f, 0f, 0f);
+                armOn = false;
             }
 
-            if (seconds == 20) {
-                requestOpModeStop();
+            if (!armOn) {
+                grijper.setPosition(0);
             }
 
             linksvoor.setPower(powerSupply.frontLeftPower);
             linksachter.setPower(powerSupply.backLeftPower);
             rechtsvoor.setPower(powerSupply.frontRightPower);
             rechtsachter.setPower(powerSupply.backRightPower);
+
+            arm.setPower(armOn ? .8 : 0);
         }
     }
 }
