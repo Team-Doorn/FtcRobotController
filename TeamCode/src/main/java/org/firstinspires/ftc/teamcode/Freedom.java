@@ -33,7 +33,7 @@ public class Freedom extends LinearOpMode {
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
 
         elleboog.setPosition(0.78);
-        elleboog.scaleRange(0.42, 0.735);
+        elleboog.scaleRange(0.41, 0.735);
         grijper.scaleRange(0.3, 0.55);
 
         // Put initialization blocks here.
