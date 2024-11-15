@@ -42,30 +42,39 @@ public class LiberalFreedom extends LinearOpMode {
         ElapsedTime elapsed = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
 
         Utils.PowerSupply powerSupply = new Utils.PowerSupply();
-        boolean armOn = true;
+        boolean armOn = false;
         while (opModeIsActive()) {
             double seconds = elapsed.time();
-            if (seconds < 2.25) {
+            if (seconds < 1.95) {
                 powerSupply.getPower(0f, -1f, 0f, .3f);
-            } else if (seconds < 2.5) {
+            } /*else if (seconds < 2.25) {
                 powerSupply.getPower(0f, 0f, 0f, 0f);
                 armOn = false;
-            } else if (seconds < 3.2) {
+            } else if (seconds < 2.95) {
                 powerSupply.getPower(0f, -1f, 0f, .2f);
-            } else {
+            }*/ else if (seconds < 5) {
                 powerSupply.getPower(0f, 0f, 0f, 0f);
+                armOn = true;
+            } else if (seconds < 7) {
+                armOn = false;
+                grijper.setPosition(0);
+                powerSupply.getPower(0f, 1f, 0f, .3f);
+            } else if (seconds < 10.5) {
+                powerSupply.getPower(1f,0f,0f,.3f);
+            } else {
+                powerSupply.getPower(0f,0f,0f,0f);
             }
 
-            if (!armOn) {
+            /*if (!armOn) {
                 grijper.setPosition(0);
-            }
+            }*/
 
             linksvoor.setPower(powerSupply.frontLeftPower);
             linksachter.setPower(powerSupply.backLeftPower);
             rechtsvoor.setPower(powerSupply.frontRightPower);
             rechtsachter.setPower(powerSupply.backRightPower);
 
-            arm.setPower(armOn ? .8 : 0);
+            arm.setPower(armOn ? -.8 : 0);
         }
     }
 }
