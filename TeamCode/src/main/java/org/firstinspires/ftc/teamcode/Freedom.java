@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @TeleOp(name = "Freedom")
 public class Freedom extends LinearOpMode {
@@ -15,6 +16,8 @@ public class Freedom extends LinearOpMode {
     private DcMotor arm;
     private Servo elleboog;
     private Servo grijper;
+    private TouchSensor touchlinks;
+    private TouchSensor touchrechts;
 
     /**
      * This function is executed when this OpMode is selected from the Driver Station.
@@ -28,6 +31,8 @@ public class Freedom extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "arm");
         elleboog = hardwareMap.get(Servo.class, "elleboog");
         grijper = hardwareMap.get(Servo.class, "grijper");
+        touchlinks = hardwareMap.get(TouchSensor.class, "touchlinks");
+        touchrechts = hardwareMap.get(TouchSensor.class, "touchrechts");
 
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
