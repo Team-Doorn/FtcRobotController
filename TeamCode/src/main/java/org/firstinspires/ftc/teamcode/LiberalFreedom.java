@@ -19,6 +19,7 @@ public class LiberalFreedom extends LinearOpMode {
     private Servo grijper;
     private TouchSensor touchlinks;
     private TouchSensor touchrechts;
+    private TouchSensor touchachter;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -31,6 +32,7 @@ public class LiberalFreedom extends LinearOpMode {
         grijper = hardwareMap.get(Servo.class, "grijper");
         touchlinks = hardwareMap.get(TouchSensor.class, "touchlinks");
         touchrechts = hardwareMap.get(TouchSensor.class, "touchrechts");
+        touchachter = hardwareMap.get(TouchSensor.class, "touchachter");
 
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -44,34 +46,41 @@ public class LiberalFreedom extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        this.telemetry.speak("hello");
-        this.telemetry.addData("test", telemetry);
-        this.telemetry.addLine("line");
-        System.out.println("yoo");
-
         ElapsedTime elapsed = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
 
         Utils.PowerSupply powerSupply = new Utils.PowerSupply();
         boolean armOn = false;
-        boolean hasHit = false;
+        boolean hasHitScoreBar = false;
+        boolean hasHitBorder = false;
         double fixedSeconds = 0;
         while (opModeIsActive()) {
             double seconds = elapsed.time();
-            if (touchlinks.isPressed() && touchrechts.isPressed() && !hasHit) {
-                hasHit = true;
+
+            if (touchlinks.isPressed() && touchrechts.isPressed() && !hasHitScoreBar) {
+                hasHitScoreBar = true;
                 fixedSeconds = seconds;
             }
 
-            if (!hasHit) {
-                powerSupply.getPower(0f, -1f, 0f, .3f);
-            } else if (seconds - fixedSeconds < 0.05) {
-                powerSupply.getPower(0f, 1f, 0f, .3f);
-            } else if (seconds - fixedSeconds < 3) {
-                powerSupply.getPower(0f, 0f, 0f, .3f);
+            if (touchachter.isPressed() && hasHitScoreBar && !hasHitBorder) {
+                hasHitBorder = true;
+                fixedSeconds = seconds;
+            }
+
+            if (!hasHitScoreBar) {
+                powerSupply.setPower(0f, -1f, 0f, .3f);
+            } else if (seconds - fixedSeconds < 0.05 && !hasHitBorder) {
+                powerSupply.setPower(0f, 1f, 0f, .3f);
+            } else if (seconds - fixedSeconds < 3 && !hasHitBorder) {
+                powerSupply.stop();
                 arm.setPower(-0.8);
-            } else {
+            } else if (!hasHitBorder) {
                 arm.setPower(0);
                 grijper.setPosition(0);
+                powerSupply.setPower(0f, 1f, 0f, .3f);
+            } else if (seconds - fixedSeconds < 3) {
+                powerSupply.setPower(1f, 0f, 0f, .3f);
+            } else {
+                powerSupply.stop();
             }
 
             linksvoor.setPower(powerSupply.frontLeftPower);

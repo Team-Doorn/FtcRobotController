@@ -18,6 +18,7 @@ public class Freedom extends LinearOpMode {
     private Servo grijper;
     private TouchSensor touchlinks;
     private TouchSensor touchrechts;
+    private TouchSensor touchachter;
 
     /**
      * This function is executed when this OpMode is selected from the Driver Station.
@@ -33,6 +34,7 @@ public class Freedom extends LinearOpMode {
         grijper = hardwareMap.get(Servo.class, "grijper");
         touchlinks = hardwareMap.get(TouchSensor.class, "touchlinks");
         touchrechts = hardwareMap.get(TouchSensor.class, "touchrechts");
+        touchachter = hardwareMap.get(TouchSensor.class, "touchachter");
 
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -63,8 +65,8 @@ public class Freedom extends LinearOpMode {
                 power = 1f;
             }
 
-            mainPowerSupply.getPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-            secondaryPowerSupply.getPower(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.right_stick_x, power);
+            mainPowerSupply.setPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            secondaryPowerSupply.setPower(gamepad2.left_stick_x, gamepad2.left_stick_y, gamepad2.right_stick_x, power);
 
             Utils.PowerSupply chosenPowerSupply = secondaryPowerSupply.isActive() ? secondaryPowerSupply : mainPowerSupply;
 

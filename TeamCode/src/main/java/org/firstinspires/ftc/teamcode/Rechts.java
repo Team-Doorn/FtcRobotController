@@ -45,9 +45,9 @@ public class Rechts extends LinearOpMode {
         while (opModeIsActive()) {
             double seconds = elapsed.time();
             if (seconds < 4) {
-                powerSupply.getPower(1f, 0f, 0f, .2f);
+                powerSupply.setPower(1f, 0f, 0f, .2f);
             } else {
-                powerSupply.getPower(0f, 0f, 0f, 0f);
+                powerSupply.setPower(0f, 0f, 0f, 0f);
             }
 
             linksvoor.setPower(powerSupply.frontLeftPower);
