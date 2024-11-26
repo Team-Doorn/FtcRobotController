@@ -9,7 +9,7 @@ import java.util.Optional;
 public class Utils {
     public static float closestToZero(Float[] nums) {
         Optional<Float> num = Arrays.stream(nums).filter(i -> i != 0)
-                .reduce((a, b) -> abs(a) < abs(b) ? a : (abs(a) == abs(b) ? max(a, b) : b));
+                .reduce((a, b) -> Math.abs(a) < Math.abs(b) ? a : b);
         return num.orElse(0f);
     }
 
@@ -43,7 +43,6 @@ public class Utils {
             backLeftPower = (y - x + rx) / denominator * power;
             frontRightPower = (y - x - rx) / denominator * power;
             backRightPower = (y + x - rx) / denominator * power;
-
         }
 
         public void stop() {

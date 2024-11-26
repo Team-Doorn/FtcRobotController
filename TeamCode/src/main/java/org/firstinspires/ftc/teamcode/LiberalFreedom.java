@@ -4,9 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "LiberalFreedom")
 public class LiberalFreedom extends LinearOpMode {
@@ -20,6 +23,9 @@ public class LiberalFreedom extends LinearOpMode {
     private TouchSensor touchlinks;
     private TouchSensor touchrechts;
     private TouchSensor touchachter;
+    private DistanceSensor afstandachter;
+    private DistanceSensor afstandrechts;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -33,6 +39,8 @@ public class LiberalFreedom extends LinearOpMode {
         touchlinks = hardwareMap.get(TouchSensor.class, "touchlinks");
         touchrechts = hardwareMap.get(TouchSensor.class, "touchrechts");
         touchachter = hardwareMap.get(TouchSensor.class, "touchachter");
+        afstandachter = hardwareMap.get(DistanceSensor.class, "afstandachter");
+        afstandrechts = hardwareMap.get(DistanceSensor.class, "afstandrechts");
 
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -53,6 +61,7 @@ public class LiberalFreedom extends LinearOpMode {
         boolean hasHitScoreBar = false;
         boolean hasHitBorder = false;
         double fixedSeconds = 0;
+        double stoppedAt = 0;
         while (opModeIsActive()) {
             double seconds = elapsed.time();
 
@@ -61,7 +70,7 @@ public class LiberalFreedom extends LinearOpMode {
                 fixedSeconds = seconds;
             }
 
-            if (touchachter.isPressed() && hasHitScoreBar && !hasHitBorder) {
+            if ((touchachter.isPressed() || afstandachter.getDistance(DistanceUnit.CM) < 10) && hasHitScoreBar && !hasHitBorder) {
                 hasHitBorder = true;
                 fixedSeconds = seconds;
             }
@@ -77,11 +86,19 @@ public class LiberalFreedom extends LinearOpMode {
                 arm.setPower(0);
                 grijper.setPosition(0);
                 powerSupply.setPower(0f, 1f, 0f, .3f);
-            } else if (seconds - fixedSeconds < 3) {
+            } else if (afstandrechts.getDistance(DistanceUnit.CM) > 10 && seconds - fixedSeconds < 10) {
                 powerSupply.setPower(1f, 0f, 0f, .3f);
             } else {
                 powerSupply.stop();
+                if (stoppedAt == 0) {
+                    stoppedAt = afstandrechts.getDistance(DistanceUnit.CM);
+                }
             }
+
+            telemetry.addData("achter", afstandachter.getDistance(DistanceUnit.CM));
+            telemetry.addData("rechts", afstandrechts.getDistance(DistanceUnit.CM));
+            telemetry.addData("stoppedat", stoppedAt);
+            telemetry.update();
 
             linksvoor.setPower(powerSupply.frontLeftPower);
             linksachter.setPower(powerSupply.backLeftPower);

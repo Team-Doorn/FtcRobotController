@@ -4,8 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Freedom")
 public class Freedom extends LinearOpMode {
@@ -19,6 +22,8 @@ public class Freedom extends LinearOpMode {
     private TouchSensor touchlinks;
     private TouchSensor touchrechts;
     private TouchSensor touchachter;
+    private DistanceSensor afstandachter;
+    private DistanceSensor afstandrechts;
 
     /**
      * This function is executed when this OpMode is selected from the Driver Station.
@@ -35,6 +40,8 @@ public class Freedom extends LinearOpMode {
         touchlinks = hardwareMap.get(TouchSensor.class, "touchlinks");
         touchrechts = hardwareMap.get(TouchSensor.class, "touchrechts");
         touchachter = hardwareMap.get(TouchSensor.class, "touchachter");
+        afstandachter = hardwareMap.get(DistanceSensor.class, "afstandachter");
+        afstandrechts = hardwareMap.get(DistanceSensor.class, "afstandrechts");
 
         linksachter.setDirection(DcMotorSimple.Direction.REVERSE);
         rechtsachter.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -103,6 +110,9 @@ public class Freedom extends LinearOpMode {
                 aPressed = false;
             }
 
+            telemetry.addData("achter", afstandachter.getDistance(DistanceUnit.CM));
+            telemetry.addData("rechts", afstandrechts.getDistance(DistanceUnit.CM));
+            telemetry.update();
         }
     }
 }
