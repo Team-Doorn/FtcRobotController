@@ -48,11 +48,11 @@ public class ElectionFreedom extends LinearOpMode {
             if (seconds < .7) {
                 powerSupply.setPower(0f, 1f, 0f, .2f);
             } else if (seconds < .95) {
-                powerSupply.setPower(0f, 0f, 0f, 0f);
+                powerSupply.stop();
             } else if (seconds < 3.2) {
                 powerSupply.setPower(0f, 1f, 0f, .3f);
             } else if (seconds < 4.75) {
-                powerSupply.setPower(0f, 0f, 0f, 0f);
+                powerSupply.stop();
                 armOn = true;
             } else {
                 armOn = false;

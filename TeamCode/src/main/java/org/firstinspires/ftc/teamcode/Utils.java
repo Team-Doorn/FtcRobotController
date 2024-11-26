@@ -21,7 +21,7 @@ public class Utils {
         double frontRightPower;
         double backRightPower;
 
-        public PowerSupply setPower(Float x, Float y, Float rx) {
+        public void setPower(Float x, Float y, Float rx) {
             y = -y;
             x = x * 1.1f;
 
@@ -31,11 +31,10 @@ public class Utils {
             frontRightPower = (y - x - rx) / denominator;
             backRightPower = (y + x - rx) / denominator;
 
-            return this;
         }
 
 
-        public PowerSupply setPower(Float x, Float y, Float rx, float power) {
+        public void setPower(Float x, Float y, Float rx, float power) {
             y = -y;
             x = x * 1.1f;
 
@@ -45,11 +44,10 @@ public class Utils {
             frontRightPower = (y - x - rx) / denominator * power;
             backRightPower = (y + x - rx) / denominator * power;
 
-            return this;
         }
 
-        public PowerSupply stop() {
-            return setPower(0f, 0f, 0f);
+        public void stop() {
+            setPower(0f, 0f, 0f);
         }
 
         boolean isActive() {
