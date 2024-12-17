@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Rechts")
 public class Rechts extends LinearOpMode {
     private DcMotor linksachter;
     private DcMotor linksvoor;

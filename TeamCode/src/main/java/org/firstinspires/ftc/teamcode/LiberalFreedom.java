@@ -77,7 +77,7 @@ public class LiberalFreedom extends LinearOpMode {
 
             if (!hasHitScoreBar) {
                 powerSupply.setPower(0f, -1f, 0f, .3f);
-            } else if (seconds - fixedSeconds < 0.05 && !hasHitBorder) {
+            } else if (seconds - fixedSeconds < 0.09 && !hasHitBorder) {
                 powerSupply.setPower(0f, 1f, 0f, .3f);
             } else if (seconds - fixedSeconds < 3 && !hasHitBorder) {
                 powerSupply.stop();
